@@ -1,0 +1,24 @@
+name: Build GameOptimizer.exe
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install deps
+      run: pip install customtkinter pyinstaller
+    - name: Build exe
+      run: pyinstaller --onefile --noconsole --name "GameOptimizer_v1" GameOptimizer.py
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GameOptimizer_v1_exe
+        path: dist/GameOptimizer_v1.exe
