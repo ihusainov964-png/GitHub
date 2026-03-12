@@ -10,15 +10,23 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
+
     - uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+
     - name: Install deps
       run: pip install customtkinter pyinstaller
+
+    - name: Rename py file
+      run: Get-ChildItem "*.py" | Rename-Item -NewName "GameOptimizer.py"
+      shell: pwsh
+
     - name: Build exe
-      run: pyinstaller --onefile --noconsole --name "GameOptimizer_v1" GameOptimizer.py
+      run: pyinstaller --onefile --noconsole --name "GameOptimizer_v2" GameOptimizer.py
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: GameOptimizer_v1_exe
-        path: dist/GameOptimizer_v1.exe
+        name: GameOptimizer_v2_exe
+        path: dist/GameOptimizer_v2.exe
