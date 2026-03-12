@@ -1,0 +1,36 @@
+name: Build GameOptimizer.exe
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install deps
+      run: pip install customtkinter pyinstaller
+
+    - name: Find and rename py file
+      run: |
+        $file = Get-ChildItem -Filter "*.py" | Select-Object -First 1
+        Write-Host "Found: $($file.Name)"
+        Rename-Item $file.FullName "GameOptimizer.py" -ErrorAction SilentlyContinue
+        dir *.py
+      shell: pwsh
+
+    - name: Build exe
+      run: pyinstaller --onefile --noconsole --name "GameOptimizer_v2" GameOptimizer.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: GameOptimizer_v2_exe
+        path: dist/GameOptimizer_v2.exe
